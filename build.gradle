@@ -1,0 +1,63 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.1'
+	id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'com.target.service'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation group: 'org.postgresql', name: 'postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+tasks.register("buildDev") {
+	doFirst {
+		processResources {
+			filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+					activeProfiles: "dev"
+			]
+		}
+	}
+	finalizedBy("build")
+}
+
+tasks.register("buildQa") {
+	doFirst {
+		processResources {
+			filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+					activeProfiles: "qa"
+			]
+		}
+	}
+	finalizedBy("build")
+}
+
+tasks.register("buildProd") {
+	doFirst {
+		processResources {
+			filter org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+					activeProfiles: "prod"
+			]
+		}
+	}
+	finalizedBy("build")
+}
